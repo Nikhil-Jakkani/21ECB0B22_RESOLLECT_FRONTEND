@@ -57,6 +57,3 @@ src/
   └── index.js              # Entry point
 ```
 
-## Live Demo
-
-Visit the live demo at: https://YOUR_GITHUB_USERNAME.github.io/resollect_frontend_task/
