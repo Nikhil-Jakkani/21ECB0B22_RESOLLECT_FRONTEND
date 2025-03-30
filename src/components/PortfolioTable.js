@@ -27,6 +27,8 @@ import {
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const mockData = [
   {
@@ -65,6 +67,44 @@ const tabs = [
   'Auctions',
 ];
 
+const headCells = [
+  { id: 'id', label: 'Loan No.' },
+  { id: 'loanType', label: 'Loan Type' },
+  { id: 'borrower', label: 'Borrower' },
+  { id: 'borrowerAddress', label: 'Borrower Address' },
+  { id: 'coBorrowerName', label: 'Co-Borrower Name' },
+  { id: 'coBorrowerAddress', label: 'Co-Borrower Address' },
+  { id: 'currentDPD', label: 'Current DPD', numeric: true },
+  { id: 'sanctionAmount', label: 'Sanction Amount' },
+  { id: 'region', label: 'Region' },
+];
+
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
 const PortfolioTable = () => {
   const [openUpload, setOpenUpload] = useState(false);
   const [documentType, setDocumentType] = useState('');
@@ -72,7 +112,15 @@ const PortfolioTable = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(1);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
   const rowsPerPage = 10;
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : orderBy === property ? '' : 'asc');
+    setOrderBy(order === 'desc' && orderBy === property ? '' : property);
+  };
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -124,7 +172,6 @@ const PortfolioTable = () => {
   };
 
   const handleSubmit = () => {
-    // Handle file upload logic here
     console.log('Uploading file:', selectedFile);
     console.log('Document type:', documentType);
     handleClose();
@@ -132,6 +179,17 @@ const PortfolioTable = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          mb: 3,
+          fontWeight: 1000,
+          color: 'text.primary',
+        }}
+      >
+        Portfolio
+      </Typography>
+      
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
         <Tabs
           value={currentTab}
@@ -181,44 +239,77 @@ const PortfolioTable = () => {
                   onChange={handleSelectAllClick}
                 />
               </TableCell>
-              <TableCell>Loan No.</TableCell>
-              <TableCell>Loan Type</TableCell>
-              <TableCell>Borrower</TableCell>
-              <TableCell>Borrower Address</TableCell>
-              <TableCell>Co-Borrower Name</TableCell>
-              <TableCell>Co-Borrower Address</TableCell>
-              <TableCell>Current DPD</TableCell>
-              <TableCell>Sanction Amount</TableCell>
-              <TableCell>Region</TableCell>
+              {headCells.map((headCell) => (
+                <TableCell
+                  key={headCell.id}
+                  align={headCell.numeric ? 'right' : 'left'}
+                  sortDirection={orderBy === headCell.id ? order : false}
+                >
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      color: orderBy === headCell.id ? 'primary.main' : 'inherit',
+                      '&:hover': {
+                        color: 'primary.main',
+                      },
+                    }}
+                    onClick={() => handleRequestSort(headCell.id)}
+                  >
+                    {headCell.label}
+                    <Box 
+                      component="span" 
+                      sx={{ 
+                        display: 'inline-flex',
+                        ml: 0.5,
+                        opacity: orderBy === headCell.id ? 1 : 0.5,
+                      }}
+                    >
+                      {orderBy === headCell.id ? (
+                        order === 'asc' ? (
+                          <KeyboardArrowUpIcon fontSize="small" />
+                        ) : (
+                          <KeyboardArrowDownIcon fontSize="small" />
+                        )
+                      ) : (
+                        <UnfoldMoreIcon fontSize="small" />
+                      )}
+                    </Box>
+                  </Box>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockData.map((row) => {
-              const isItemSelected = isSelected(row.id);
-              return (
-                <TableRow
-                  hover
-                  onClick={(event) => handleClick(event, row.id)}
-                  role="checkbox"
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.id}
-                  selected={isItemSelected}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox checked={isItemSelected} />
-                  </TableCell>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.loanType}</TableCell>
-                  <TableCell>{row.borrower}</TableCell>
-                  <TableCell>{row.borrowerAddress}</TableCell>
-                  <TableCell>{row.coBorrowerName}</TableCell>
-                  <TableCell>{row.coBorrowerAddress}</TableCell>
-                  <TableCell>{row.currentDPD}</TableCell>
-                  <TableCell>{row.sanctionAmount}</TableCell>
-                  <TableCell>{row.region}</TableCell>
-                </TableRow>
-              );
+            {stableSort(mockData, getComparator(order, orderBy))
+              .map((row) => {
+                const isItemSelected = isSelected(row.id);
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) => handleClick(event, row.id)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={isItemSelected} />
+                    </TableCell>
+                    <TableCell>{row.id}</TableCell>
+                    <TableCell>{row.loanType}</TableCell>
+                    <TableCell>{row.borrower}</TableCell>
+                    <TableCell>{row.borrowerAddress}</TableCell>
+                    <TableCell>{row.coBorrowerName}</TableCell>
+                    <TableCell>{row.coBorrowerAddress}</TableCell>
+                    <TableCell align="right">{row.currentDPD}</TableCell>
+                    <TableCell>{row.sanctionAmount}</TableCell>
+                    <TableCell>{row.region}</TableCell>
+                  </TableRow>
+                );
             })}
           </TableBody>
         </Table>
