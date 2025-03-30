@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Box, CssBaseline, AppBar, Toolbar, Typography, styled } from '@mui/material';
+import Sidebar from './components/Sidebar';
+import PortfolioTable from './components/PortfolioTable';
+
+const MainContent = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  marginLeft: 240,
+}));
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <Toolbar>
+          <Typography variant="h6" noWrap component="div">
+            Resollect Portfolio Management
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Sidebar />
+      <MainContent>
+        <Toolbar /> {/* This is for spacing below the AppBar */}
+        <PortfolioTable />
+      </MainContent>
+    </Box>
   );
 }
 
