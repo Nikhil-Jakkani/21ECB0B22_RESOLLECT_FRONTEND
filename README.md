@@ -18,33 +18,6 @@ A React-based portfolio management dashboard that allows users to view and manag
 - React Router
 - Axios
 
-## Getting Started
-
-1. Clone the repository:
-```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/resollect_frontend_task.git
-```
-
-2. Install dependencies:
-```bash
-cd resollect_frontend_task
-npm install
-```
-
-3. Start the development server:
-```bash
-npm start
-```
-
-4. Build for production:
-```bash
-npm run build
-```
-
-5. Deploy to GitHub Pages:
-```bash
-npm run deploy
-```
 
 ## Project Structure
 
