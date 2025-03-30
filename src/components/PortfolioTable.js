@@ -10,14 +10,6 @@ import {
   Button,
   Box,
   TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Tabs,
   Tab,
   IconButton,
@@ -106,9 +98,6 @@ function stableSort(array, comparator) {
 }
 
 const PortfolioTable = () => {
-  const [openUpload, setOpenUpload] = useState(false);
-  const [documentType, setDocumentType] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
   const [currentTab, setCurrentTab] = useState(0);
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(1);
@@ -157,26 +146,6 @@ const PortfolioTable = () => {
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const handleUploadClick = () => {
-    setOpenUpload(true);
-  };
-
-  const handleClose = () => {
-    setOpenUpload(false);
-    setSelectedFile(null);
-    setDocumentType('');
-  };
-
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const handleSubmit = () => {
-    console.log('Uploading file:', selectedFile);
-    console.log('Document type:', documentType);
-    handleClose();
-  };
-
   return (
     <Box sx={{ width: '100%' }}>
       <Typography 
@@ -204,28 +173,49 @@ const PortfolioTable = () => {
         </Tabs>
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, gap: 2 }}>
-        <TextField
-          placeholder="Search Loan Number"
-          size="small"
-          sx={{ minWidth: 200 }}
-        />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            variant="outlined"
-            endIcon={<KeyboardArrowDownIcon />}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+          <TextField
+            placeholder="Search Loan Number"
             size="small"
-          >
-            Select Columns
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<FilterListIcon />}
-            size="small"
-          >
-            More Filters
-          </Button>
+            sx={{ minWidth: 200 }}
+          />
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant="outlined"
+              endIcon={<KeyboardArrowDownIcon />}
+              size="small"
+            >
+              Select Columns
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<FilterListIcon />}
+              size="small"
+            >
+              More Filters
+            </Button>
+          </Box>
         </Box>
+
+        <Paper 
+          sx={{ 
+            p: 1.5,
+            backgroundColor: selected.length > 0 ? 'rgba(25, 118, 210, 0.04)' : 'transparent',
+            border: 1,
+            borderColor: selected.length > 0 ? 'primary.main' : 'divider'
+          }}
+        >
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: selected.length > 0 ? 'primary.main' : 'text.secondary',
+              fontWeight: selected.length > 0 ? 500 : 400
+            }}
+          >
+            {selected.length} loan{selected.length === 1 ? '' : 's'} selected
+          </Typography>
+        </Paper>
       </Box>
       
       <TableContainer component={Paper}>
@@ -326,61 +316,6 @@ const PortfolioTable = () => {
           color="primary"
         />
       </Box>
-
-      <Dialog open={openUpload} onClose={handleClose}>
-        <DialogTitle>Upload Document</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField
-              label="Document Name"
-              variant="outlined"
-              fullWidth
-            />
-            <FormControl fullWidth>
-              <InputLabel>Document Type</InputLabel>
-              <Select
-                value={documentType}
-                label="Document Type"
-                onChange={(e) => setDocumentType(e.target.value)}
-              >
-                <MenuItem value="type1">Type 1</MenuItem>
-                <MenuItem value="type2">Type 2</MenuItem>
-                <MenuItem value="type3">Type 3</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              label="Document Remarks"
-              variant="outlined"
-              multiline
-              rows={4}
-              fullWidth
-            />
-            <Button
-              variant="outlined"
-              component="label"
-              fullWidth
-            >
-              Choose File
-              <input
-                type="file"
-                hidden
-                onChange={handleFileChange}
-              />
-            </Button>
-            {selectedFile && (
-              <Box sx={{ mt: 1 }}>
-                Selected file: {selectedFile.name}
-              </Box>
-            )}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };
