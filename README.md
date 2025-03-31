@@ -19,7 +19,7 @@ A React-based portfolio management dashboard that allows users to view and manag
 - Axios
 
 
-## Project Structure
+## Main Component Structure
 
 ```
 src/
