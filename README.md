@@ -4,12 +4,10 @@ A React-based portfolio management dashboard that allows users to view and manag
 
 ## Features
 
-- Portfolio data table with sorting and filtering
+- Portfolio data table with sorting 
 - Document upload functionality
-- Multiple filter options (Pre Sarfaesi, NPA, etc.)
-- Mobile responsive design
-- Row selection and bulk actions
-- Column customization
+- UI as indicated (Pre Sarfaesi, NPA, etc.)
+
 
 ## Tech Stack
 
