@@ -24,8 +24,9 @@ src/
   ├── components/
   │   ├── Sidebar.js         # Navigation sidebar
   │   └── PortfolioTable.js  # Main data table component
+  │   └── UploadDialog.js    # Uploading documents
   ├── App.js                 # Main application component
-  └── index.js              # Entry point
+  └── index.js               # Entry point
 ```
 
 Complete documentation link https://drive.google.com/file/d/1hjvQgEX4XXxrx9YYPWqxFHalgxKKRH4b/view
